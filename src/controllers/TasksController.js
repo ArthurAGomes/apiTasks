@@ -23,6 +23,7 @@ class TasksController {
 
     //Listar Tarefa por ID
     listarTarefaUnica(req, res){
+        // pode fazer const id = req.params.id; ou const {id} = req.params;
         const id = req.params.id;
         database.select("*").table("tasks").where({id: id}).then(tasks => {
             res.json(tasks);
@@ -37,6 +38,16 @@ class TasksController {
         const { descricao, responsavel} = req.body;
         database.where({id: id}).update({ descricao: descricao, responsavel: responsavel}).table("tasks").then(data => {
             res.json({message: "Tarefa atualizada com sucesso!"});
+        }).catch(error => {
+            console.log(error);
+        });
+    }
+
+    //Deletar tarefa
+    deletarTarefa(req, res){
+        const {id} = req.params;
+        database.where({id: id}).del().table("tasks").then(data => {
+            res.json({message: "Tarefa deletada com sucesso!"});
         }).catch(error => {
             console.log(error);
         });
