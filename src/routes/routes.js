@@ -13,5 +13,5 @@ router.get('/', (req, res) => {
 router.post('/novaTarefa', TasksController.novaTarefa)
 router.get('/listarTarefas', TasksController.listarTarefas)
 router.get('/Tarefa/:id', TasksController.listarTarefaUnica)
-
+router.put('/atualizarTarefa/:id', TasksController.atualizarTarefa)
 module.exports = router;

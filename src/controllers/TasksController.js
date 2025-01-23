@@ -31,5 +31,15 @@ class TasksController {
         });
     }
 
+    atualizarTarefa(req, res){
+        // pode fazer const id = req.params.id; ou const {id} = req.params;
+        const {id} = req.params;
+        const { descricao, responsavel} = req.body;
+        database.where({id: id}).update({ descricao: descricao, responsavel: responsavel}).table("tasks").then(data => {
+            res.json({message: "Tarefa atualizada com sucesso!"});
+        }).catch(error => {
+            console.log(error);
+        });
+    }
 }
 module.exports = new TasksController();
