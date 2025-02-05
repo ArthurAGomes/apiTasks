@@ -46,6 +46,42 @@ class UserController {
         })
  
     }
+    listarUsuarios(req, res) {
+        database.select("*").table("users").then(usuarios => {
+            res.json(usuarios);
+        }).catch(error => {
+            console.log(error);
+        });
+    }
+    listarUmUsuario(req, res) {
+        const {id} = req.params;
+        database.select("*").table("users").where({ id: id }).then(usuario => {
+            res.json(usuario);
+        }).catch(error => {
+            console.log(error);
+        });
+    }
+
+    atualizarUsuario(req, res) {
+        const { id } = req.params;
+        const { nome, email, } = req.body;
+
+        database.where({ id: id }).update({ nome, email }).table("users").then(data => {
+            res.json({ message: "Usuário atualizado com sucesso!" });
+        }).catch(error => {
+            console.log(error);
+            res.status(500).json({ message: "Erro ao atualizar usuário" });
+        });
+    }
+    deletarUsuario(req, res) {
+        const { id } = req.params;
+        database.where({ id: id }).del().table("users").then(data => {
+            res.json({ message: "Usuário deletado com sucesso!" });
+        }).catch(error => {
+            console.log(error);
+            res.status(500).json({ message: "Erro ao deletar usuário" });
+        });
+    }
 }
 
 module.exports = new UserController();
