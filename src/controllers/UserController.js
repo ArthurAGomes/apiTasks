@@ -1,7 +1,7 @@
 const database = require('../database/connection');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-
+require('dotenv').config();
 class UserController {
 
     //cadastrar usuario
@@ -17,8 +17,7 @@ class UserController {
             res.status(500).json({ message: "Erro ao cadastrar usuário" });
         });
     }
-
-    //autenticar usuario
+   //autenticar usuario
     autenticarUsuario(req, res){
         const {email, senha} = req.body;
  
@@ -33,7 +32,7 @@ class UserController {
                 res.status(401).json({message: "Autenticação falhou! "})
            
  
-            const token = jwt.sign({id: usuario[0].id}, 'Titos@2025!', {
+            const token = jwt.sign({id: usuario[0].id}, process.env.SALT, {
                 expiresIn: '1h'
             })
  
@@ -81,6 +80,19 @@ class UserController {
             console.log(error);
             res.status(500).json({ message: "Erro ao deletar usuário" });
         });
+    }
+    async redefinirSenha(req, res) {
+        const { id } = req.params;
+        const { senha } = req.body;
+
+        const senhaSegura = await bcrypt.hashSync(senha, 10);
+         database.where({ id: id }).update({ senha: senhaSegura }).table("users").then(data => {
+            res.json({ message: "Senha redefinida com sucesso!" });
+        
+         }).catch(error => {
+            console.log(error);
+            res.status(500).json({ message: "Erro ao redefinir senha" });
+         });
     }
 }
 
